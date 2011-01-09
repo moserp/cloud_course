@@ -1,7 +1,7 @@
 require 'common'
 
 
-policy :ubuntu, :roles => [:app_1, :app_2] do
+policy :application, :roles => [:app_1, :app_2] do
   requires :mtu
   requires :apt_sources
 
@@ -23,8 +23,8 @@ package :load_balancer_config do
   <Proxy balancer://mycluster>
     Order allow,deny
     Allow from all
-    BalancerMember http://109.144.14.183:80
-    BalancerMember http://109.144.14.184:80
+    BalancerMember http://109.144.14.190:80
+    BalancerMember http://109.144.14.191:80
   </Proxy>
   ProxyPass / balancer://mycluster
 
@@ -35,6 +35,7 @@ package :load_balancer_config do
 </VirtualHost>
 EOF
   push_text config, '/etc/apache2/sites-available/balancer.conf'
+  runner 'rm /etc/apache2/sites-enabled/*'
   runner 'ln -s /etc/apache2/sites-available/balancer.conf /etc/apache2/sites-enabled/00-balancer.conf'
   runner 'ln -s /etc/apache2/mods-available/proxy.conf /etc/apache2/mods-enabled/proxy.conf'
   runner 'ln -s /etc/apache2/mods-available/proxy.load /etc/apache2/mods-enabled/proxy.load'
@@ -46,9 +47,9 @@ end
 deployment do
   delivery :capistrano do
     set :user, 'root'
-    role :app_1, '109.144.14.183', :primary => true
-    role :app_2, '109.144.14.184'
-    role :load_balancer, '109.144.14.185'
+    role :app_1, '109.144.14.190', :primary => true
+    role :app_2, '109.144.14.191'
+    role :load_balancer, '109.144.14.192'
     default_run_options[:pty] = true
   end
 end
