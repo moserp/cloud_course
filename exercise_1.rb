@@ -4,7 +4,7 @@ require 'common'
 # You can define multiple poilicies.
 policy :application, :roles => [:my_server] do
   requires :mtu
-  requires :apt_sources
+  requires :yum_sources
 
   requires :app
 end
@@ -13,7 +13,7 @@ end
 deployment do
   delivery :capistrano do
     set :user, 'root'
-    role :my_server, '109.144.14.193', :primary => true
+    role :my_server, '109.144.14.239', :primary => true
     default_run_options[:pty] = true
   end
 end

@@ -7,22 +7,22 @@ package :app_server do
   requires :php
 end
 
-package :load_balancer do
-  requires :apache
-end
-
 package :apache do
-  apt 'apache2'
+  yum 'httpd' do
+    post :install, 'apachectl start'
+  end
 end
 
 package :php do
-  apt 'libapache2-mod-php5'
+  yum 'php' do
+    post :install, 'apachectl restart'
+  end
 end
 
 package :app do
   requires :app_server
-  transfer 'index.php', '/var/www/index.php' do
-    post :install, 'rm /var/www/index.html && apache2ctl restart'
+  transfer 'index.php', '/var/www/html/index.php' do
+    post :install, 'apachectl restart'
   end
 end
 
@@ -34,4 +34,8 @@ package :apt_sources do
   noop do
     post :install, 'apt-get update'
   end
+end
+
+package :yum_sources do
+  transfer 'CentOS-Base.repo', '/etc/yum.repos.d/CentOS-Base.repo'
 end

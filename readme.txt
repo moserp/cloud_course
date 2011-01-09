@@ -51,13 +51,8 @@ balancer in front of them. Don't touch the instance you had running for exercise
 You can use Apache as a load balancer, but the generically installed version
 takes some configuring to get it to work as a load balancer:
 
-You need to symlink
-  /etc/apache2/mods-available/proxy.conf to /etc/apache2/mods-enabled/proxy.conf'
-  /etc/apache2/mods-available/proxy.load to /etc/apache2/mods-enabled/proxy.load'
-  /etc/apache2/mods-available/proxy_http.load to /etc/apache2/mods-enabled/proxy_http.load'
-  /etc/apache2/mods-available/proxy_balancer.load to /etc/apache2/mods-enabled/proxy_balancer.load'
-
-And replace the default virtual host configuration in /etc/apache2/sites-enabled with:
+You need to configure a virtual host containing the load balancer configuration
+by creating a file in /etc/httpd/conf.d with some similar to
 
 <VirtualHost *:80>
 
@@ -69,10 +64,10 @@ And replace the default virtual host configuration in /etc/apache2/sites-enabled
   </Proxy>
   ProxyPass / balancer://mycluster
 
-  ErrorLog /var/log/apache2/error.log
+  ErrorLog /var/log/httpd/error.log
   LogLevel warn
 
-  CustomLog /var/log/apache2/access.log combined
+  CustomLog /var/log/httpd/access.log combined
 </VirtualHost>
 
 (using the IP addresses of you two application instances)
